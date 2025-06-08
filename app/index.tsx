@@ -10,13 +10,14 @@ export default function WelcomeScreen() {
       <Text style={styles.title}>Welcome screen</Text>
 
       <Text>{isSignedIn ? "Authenticated" : "Not authenticated"}</Text>
-      <Button title="Sign out" onPress={() => signOut()} />
+
+      <Link href="/(tabs)">Go to Pokédex</Link>
 
       <Link href="/sign-in">Go to sign in</Link>
 
-      <Link href="/(tabs)">Go to tabs</Link>
+      <Link href="/(protected)">Go to Protected Screen</Link>
 
-      <Link href="/(protected)">Go to Protected Screens</Link>
+      <Button title="Sign out" onPress={() => signOut()} />
     </View>
   );
 }

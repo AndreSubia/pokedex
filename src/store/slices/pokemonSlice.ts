@@ -1,9 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  NamedAPIResource,
-  NamedAPIResourceList,
-  PokemonClient,
-} from "pokenode-ts";
+import { PokemonClient } from "pokenode-ts";
 
 interface Pokemon {
   name: string;
@@ -32,7 +28,22 @@ export const fetchPokemons = createAsyncThunk(
     const limit = 20;
     const offset = (page - 1) * limit;
     const response = await api.listPokemons(offset, limit);
-    return response;
+
+    // Fetch detailed information for each Pokemon
+    const detailedPokemons = await Promise.all(
+      response.results.map(async (pokemon) => {
+        const details = await api.getPokemonByName(pokemon.name);
+        return {
+          name: details.name,
+          url: details.sprites.front_default || "",
+        };
+      }),
+    );
+
+    return {
+      ...response,
+      results: detailedPokemons,
+    };
   },
 );
 

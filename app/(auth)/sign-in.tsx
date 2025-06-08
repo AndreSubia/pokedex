@@ -1,8 +1,8 @@
 import { Link } from "expo-router";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -16,6 +16,8 @@ import CustomButton from "@//components/CustomButton";
 import CustomInput from "@//components/CustomInput";
 import SignInWith from "@//components/SignInWith";
 import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const signInSchema = z.object({
   email: z.string({ message: "Email is required" }).email("Invalid email"),
@@ -63,7 +65,7 @@ export default function SignInScreen() {
     resolver: zodResolver(signInSchema),
   });
 
-  console.log("Errors: ", JSON.stringify(errors, null, 2));
+  const insets = useSafeAreaInsets();
 
   const { signIn, isLoaded, setActive } = useSignIn();
 
@@ -101,56 +103,81 @@ export default function SignInScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <Text style={styles.title}>Sign in</Text>
+    <View style={[styles.screen, { paddingTop: insets.top }]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <Link href="/(tabs)" asChild>
+          <Pressable>
+            {({ pressed }) => (
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                style={{ opacity: pressed ? 0.5 : 1 }}
+              />
+            )}
+          </Pressable>
+        </Link>
+        <View style={styles.content}>
+          <Text style={styles.title}>Sign in</Text>
 
-      <View style={styles.form}>
-        <CustomInput
-          control={control}
-          name="email"
-          placeholder="Email"
-          autoFocus
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-        />
+          <View style={styles.form}>
+            <CustomInput
+              control={control}
+              name="email"
+              placeholder="Email"
+              autoFocus
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+            />
 
-        <CustomInput
-          control={control}
-          name="password"
-          placeholder="Password"
-          secureTextEntry
-        />
+            <CustomInput
+              control={control}
+              name="password"
+              placeholder="Password"
+              secureTextEntry
+            />
 
-        {errors.root && (
-          <Text style={{ color: "crimson" }}>{errors.root.message}</Text>
-        )}
-      </View>
+            {errors.root && (
+              <Text style={{ color: "crimson" }}>{errors.root.message}</Text>
+            )}
+          </View>
 
-      <CustomButton text="Sign in" onPress={handleSubmit(onSignIn)} />
+          <CustomButton text="Sign in" onPress={handleSubmit(onSignIn)} />
 
-      <Link href="/sign-up" style={styles.link}>
-        Don't have an account? Sign up
-      </Link>
+          <Link href="/sign-up" style={styles.link}>
+            Don't have an account? Sign up
+          </Link>
 
-      <View style={{ flexDirection: "row", gap: 10, marginHorizontal: "auto" }}>
-        <SignInWith strategy="oauth_google" />
-        <SignInWith strategy="oauth_facebook" />
-        <SignInWith strategy="oauth_apple" />
-      </View>
-    </KeyboardAvoidingView>
+          <View
+            style={{ flexDirection: "row", gap: 10, marginHorizontal: "auto" }}
+          >
+            <SignInWith strategy="oauth_google" />
+            <SignInWith strategy="oauth_facebook" />
+            <SignInWith strategy="oauth_apple" />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "flex-start",
+    padding: 16,
+  },
+  content: {
+    flex: 1,
     justifyContent: "center",
-    padding: 20,
     gap: 20,
   },
   form: {

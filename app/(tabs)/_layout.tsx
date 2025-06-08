@@ -22,16 +22,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
+          title: "Pokédex",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/" asChild>
+          headerLeft: () => (
+            <Link href="/sign-in" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="info-circle"
+                    name="sign-in"
                     size={25}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    color={"#000"}
+                    style={{ marginLeft: 16, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
               </Pressable>

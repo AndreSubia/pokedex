@@ -1,7 +1,9 @@
 import { usePokemons } from "@//hook/usePokemons";
-import { ScrollView, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { ScrollView, Text, View, useWindowDimensions } from "react-native";
 
 export default function TabOneScreen() {
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
   const { pokemons, loading, error } = usePokemons();
 
   return (
@@ -10,11 +12,11 @@ export default function TabOneScreen() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#fff",
         gap: 15,
       }}
     >
-      <Text style={{ fontSize: 24, fontWeight: "bold" }}>Pokédex</Text>
-      <ScrollView style={{ width: "100%", padding: 10 }}>
+      <ScrollView style={{ width: "100%", padding: 16 }}>
         {loading && <Text>Cargando...</Text>}
         {error && <Text style={{ color: "red" }}>{error}</Text>}
         {pokemons.map((pokemon) => (
@@ -28,7 +30,21 @@ export default function TabOneScreen() {
               width: "100%",
             }}
           >
-            <Text style={{ fontSize: 16 }}>{pokemon.name}</Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              {pokemon.name.charAt(0).toUpperCase() +
+                pokemon.name.slice(1).toLowerCase()}
+            </Text>
+            <Image
+              source={pokemon.url}
+              style={{
+                width: SCREEN_WIDTH / 2,
+                height: 200,
+                marginVertical: 10,
+                alignSelf: "center",
+              }}
+              contentFit={"cover"}
+              transition={500}
+            />
             <Text style={{ color: "#666" }}>{pokemon.url}</Text>
           </View>
         ))}
